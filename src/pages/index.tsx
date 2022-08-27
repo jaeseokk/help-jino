@@ -5,7 +5,20 @@ import LoadingLayer from '../components/LoadingLayer';
 import {useState} from 'react';
 import axios, {AxiosResponse} from 'axios';
 import {PlacesData} from '../types';
-import {exportFile} from '../utils';
+import {exportFile, sleep} from '../utils';
+
+const getData = async (keyword: string, index: number) => {
+  const res = await axios.get<unknown, AxiosResponse<PlacesData>>('/api/places', {
+    params: {
+      keyword,
+      index,
+    },
+  });
+
+  const data = res.data;
+
+  return data;
+};
 
 const Index = () => {
   const [keyword, setKeyword] = useState('');
@@ -23,23 +36,23 @@ const Index = () => {
 
           try {
             setIsLoading(true);
-            const res = await axios.get<
-              unknown,
-              AxiosResponse<PlacesData['restaurantList']['items']>
-            >('/api/places', {
-              params: {
-                keyword,
-              },
-            });
+            const data = await getData(keyword, 1);
 
-            const data = res.data;
+            const total = data.restaurantList.total;
 
-            if (data.length === 0) {
+            const totalItems = [...data.restaurantList.items];
+            for (let i = 2; i <= total; i++) {
+              await sleep(100);
+              const data = await getData(keyword, i);
+              totalItems.push(...data.restaurantList.items);
+            }
+
+            if (totalItems.length === 0) {
               alert('검색 결과가 없습니다.');
               return;
             }
 
-            exportFile(keyword, res.data);
+            exportFile(keyword, totalItems);
           } catch (e) {
             alert('에러');
           } finally {

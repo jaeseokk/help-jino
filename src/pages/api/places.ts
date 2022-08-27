@@ -41,18 +41,20 @@ const getData = async (keyword: string, index: number) => {
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<unknown>) => {
   const keyword = req.query.keyword as string;
-  const data = await getData(keyword, 1);
+  const index = Number(req.query.index as string);
+  const data = await getData(keyword, index);
 
-  const total = data.restaurantList.total;
-
-  const totalItems = [...data.restaurantList.items];
-  for (let i = 2; i <= total; i++) {
-    // await sleep(10);
-    const data = await getData(keyword, i);
-    totalItems.push(...data.restaurantList.items);
-  }
-
-  return res.status(200).json(totalItems);
+  // const total = data.restaurantList.total;
+  //
+  // const totalItems = [...data.restaurantList.items];
+  // for (let i = 2; i <= total; i++) {
+  //   // await sleep(10);
+  //   const data = await getData(keyword, i);
+  //   totalItems.push(...data.restaurantList.items);
+  // }
+  //
+  // return res.status(200).json(totalItems);
+  return res.status(200).json(data);
 };
 
 export default handler;
