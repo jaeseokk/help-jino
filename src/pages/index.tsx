@@ -4,20 +4,18 @@ import {Container} from '../components/Container';
 import LoadingLayer from '../components/LoadingLayer';
 import {useState} from 'react';
 import axios, {AxiosResponse} from 'axios';
-import {PlacesData} from '../types';
-import {exportFile, sleep} from '../utils';
+import {PlacesData, SitesData} from '../types';
+import {exportFile, pick, sleep} from '../utils';
 
 const getData = async (keyword: string, index: number) => {
-  const res = await axios.get<unknown, AxiosResponse<PlacesData>>('/api/places', {
+  const res = await axios.get<unknown, AxiosResponse<PlacesData['businesses']>>('/api/places', {
     params: {
       keyword,
       index,
     },
   });
 
-  const data = res.data;
-
-  return data;
+  return res.data;
 };
 
 const Index = () => {
@@ -37,14 +35,18 @@ const Index = () => {
           try {
             setIsLoading(true);
             const data = await getData(keyword, 1);
+            const totalPage = Math.floor(data.total / 40) + 1;
 
-            const total = data.restaurantList.total;
-
-            const totalItems = [...data.restaurantList.items];
-            for (let i = 2; i <= total; i++) {
+            const totalItems = [...data.items];
+            for (let i = 1; i < totalPage; i++) {
               await sleep(100);
-              const data = await getData(keyword, i);
-              totalItems.push(...data.restaurantList.items);
+              const data = await getData(keyword, i * 40 + 1);
+
+              if (data.items.length === 0) {
+                break;
+              }
+
+              totalItems.push(...data.items);
             }
 
             if (totalItems.length === 0) {

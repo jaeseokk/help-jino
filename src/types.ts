@@ -1,16 +1,30 @@
 export interface PlacesData {
-  restaurantList: {
+  businesses: {
     total: number;
     items: {
       id: string;
       name: string;
       category: string;
-      hasBooking: boolean | null;
-      imageUrl: string;
-      address: string;
-      isTableOrder: boolean | null;
-      isPreOrder: boolean | null;
-      isTakeOut: boolean | null;
+      roadAddress: string;
+      phone: string;
+      businessHours: string;
     }[];
+  };
+}
+
+export interface SitesData {
+  result: {
+    site: {
+      page: number;
+      list: {
+        id: string;
+        name: string;
+        roadAddress: string;
+        telDisplay: string;
+        homepage: string;
+        description: string;
+      }[];
+    };
+    totalCount: number;
   };
 }

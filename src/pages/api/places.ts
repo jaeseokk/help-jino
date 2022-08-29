@@ -6,22 +6,18 @@ import {sleep} from '../../utils';
 const endpoint = 'https://api.place.naver.com/graphql';
 
 const query = gql`
-  query getOpeningPlaces($input: RestaurantListInput) {
-    restaurantList(input: $input) {
+  query getPlacesList($input: PlacesInput) {
+    businesses: places(input: $input) {
       total
       items {
         id
         name
         category
-        hasBooking
-        imageUrl
-        address
-        isTableOrder
-        isPreOrder
-        isTakeOut
-        __typename
+        roadAddress
+        phone
+        businessHours
+        bookingUrl
       }
-      __typename
     }
   }
 `;
@@ -32,11 +28,10 @@ const getData = async (keyword: string, index: number) => {
       query: keyword,
       start: index,
       display: 40,
-      filterOpening: true,
     },
   });
 
-  return data;
+  return data.businesses;
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<unknown>) => {
