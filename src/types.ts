@@ -28,3 +28,22 @@ export interface SitesData {
     totalCount: number;
   };
 }
+
+export interface PlacesV2Data {
+  result: {
+    place: {
+      page: number;
+      totalCount: number;
+      list: {
+        id: string;
+        name: string;
+        category: string[];
+        roadAddress: string;
+        telDisplay: string;
+        businessStatus: {
+          businessHours: string;
+        };
+      }[];
+    };
+  };
+}
