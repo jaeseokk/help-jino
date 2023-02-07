@@ -3,7 +3,7 @@ import {NextApiRequest, NextApiResponse} from 'next';
 import {PlacesData} from '../../types';
 import {sleep} from '../../utils';
 
-const endpoint = 'https://api.place.naver.com/graphql';
+const endpoint = 'https://pcmap-api.place.naver.com/graphql';
 
 const query = gql`
   query getPlacesList($input: PlacesInput) {
@@ -29,6 +29,8 @@ const getData = async (keyword: string, index: number) => {
       start: index,
       display: 40,
     },
+  }, {
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
   });
 
   return data.businesses;
